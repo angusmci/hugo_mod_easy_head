@@ -1,0 +1,4 @@
+{{ if .IsHome }}
+    {{ if isset .Site.Params "google_verification" }}<meta name="google-site-verification" content="{{ .Site.Params.google_verification }}" />{{ end }}
+    {{ if isset .Site.Params "ms_verification" }}<meta name="msvalidate.01" content="{{ .Site.Params.ms_verification }}" />{{ end }}
+{{ end }}

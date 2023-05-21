@@ -1,0 +1,3 @@
+{{ $manifest := newScratch }}{{ $manifest.Set "name" .Site.Title }}{{ if isset .Site.Params "short_name" }}{{ $manifest.Set "short_name" .Site.Params.short_name }}
+{{ end }}{{ if isset .Site.Params "description" }}{{ $manifest.Set "description" .Site.Params.description }}{{ end }}{{ if isset .Site.Params "theme_color" }}{{ $manifest.Set "theme_color" .Site.Params.theme_color }}{{ end }}
+{{ if isset .Site.Params "background_color" }}{{ $manifest.Set "background_color" .Site.Params.background_color }}{{ end }}{{ $manifest.Set "icons" (slice (dict "src" "/icons/icon-192.png" "type" "image/png" "sizes" "192x192" )  (dict "src" "/icons/icon-512.png" "type" "image/png" "sizes" "512x512" ) ) }}{{ $manifest.Values | jsonify (dict "indent" "  ") }}
