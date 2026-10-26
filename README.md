@@ -169,31 +169,41 @@ or `easy-head` in your template. Google suggests placing this immediately after 
 
 If no `google_analytics` value is defined in the site's parameters, no script code will be inserted.
 
+### `easy-authormeta`
+
+The `easy-authormeta` partial will inject a meta element to show the name of the author of the page, e.g.
+
+```
+<meta name="author" content="Jane Smith">
+```
+
+The name is taken either from the `author` param of the page or of the site (in the sitewide config file), e.g.
+
+```
+[Params]
+author = Jane Doe
+```
+
+If there is no `author` param in either the page frontmatter or the site configuration, the meta tag will not be generated.
+
 ### `easy-robotsmeta`
 
-The `easy-robotsmeta` partial will inject a meta tag to control indexing by robots, e.g.
+The `easy-robotsmeta` partial will inject a element tag to control indexing by robots, e.g.
 
 ```
 <meta name="robots" content="index, nofollow">
 ```
 
-You can control the behavior of this tag using various parameters. First, the value can be set in your frontmatter with the `robots` parameter, e.g.
+The value is taken either from the `robots` param of the page or of the site (in the sitewide config file), e.g.
 
 ```
 [Params]
 robots = noindex, nofollow
 ```
 
-If you don't provide a `robots` param, the default behavior will be to insert a meta tag with the value set to `all`, so that your page will be indexed and all links in the page followed. See Google's page on the [robots meta tag](https://developers.google.com/search/docs/crawling-indexing/robots-meta-tag) for a list of possible values.
+If you don't provide a `robots` param, the meta element will not be generated.
 
-If you don't want robots meta tags to be added to pages on your site, then you can turn them off site-wide by adding a site parameter `enableRobotsMeta` set to `false`, e.g.
-
-```
-[Params]
-enableRobotsMeta = false
-```
-
-Note that the global `enableRobotsMeta` will be overridden by a local `robots` value, e.g. if `enableRobotsMeta` is `false` but an individual page has a parameter that specifies a value, then the meta tag will be generated for that page.
+ See Google's page on the [robots meta tag](https://developers.google.com/search/docs/crawling-indexing/robots-meta-tag) for a list of possible values.
 
 ### `easy-humanslink`
 
