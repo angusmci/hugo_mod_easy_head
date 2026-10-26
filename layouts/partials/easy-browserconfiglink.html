@@ -1,1 +1,1 @@
-<meta name="msapplication-config" content="/browserconfig.xml" />
+{{ if (and (isset .Site.Params "enablebrowserconfiglink") .Site.Params.enablebrowserconfiglink) }}<meta name="msapplication-config" content="/browserconfig.xml" />{{ end }}
