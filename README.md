@@ -13,6 +13,8 @@ Features provided by this module include:
     - a partial for linking to a small set of standard icons
     - a partial for including verification tokens for Bing and Google
     - a partial for including the robots meta tag
+    - a partial for adding Google Analytics code
+    - a partial for linking to the `humans.txt` file.
 
 Note that this module does *not* generate or place icons for you. It just creates links.
 
@@ -62,6 +64,160 @@ hugo mod get -u
 
 ## Usage
 
+### `easy-head`
+
+The simplest way to use this module is to add a single partial to the `<head>` of your HTML documents:
+
+```
+{{ partial "easy-head" . }}
+```
+
+This will bring in the other partials defined in this module, adding a large set of standard tags to your `<head>`. The default settings will probably give you sensible results for a basic website, but you may still need to do some basic configuration through `Site.Params` and `outputs` to get the exact behavior you want. You're also responsible for ensuring that you have any required supporting files, e.g. icons or a "humans.txt" file.
+
+The `easy-head` partial will also insert a call to `hugo.Generator` to add a generator tag on the homepage. If you would prefer not to have this for any reason, use Hugo's [`disableGeneratorInject`](https://gohugo.io/configuration/all/#disablehugogeneratorinject) site parameter to disable it.
+
+Read the descriptions of the individual partials below to see how to configure them.
+
+If you want to fine-tune the contents of your `<head>` a bit more, instead of using `easy-head` you can use any combination of the individual partials listed below separately. For example, if you don't like the set of recommended icon links inserted by `easy-iconlinks`, you could use the other partials to set up the `<head>` the way you want it, and then add your own set of iconlinks.
+
+### `easy-manifestlink`
+
+The `easy-manifestlink` partial is invoked with
+
+```
+{{ partial "easy-manifestlink" . }}
+```
+
+to add a link to your [web application manifest](https://developer.mozilla.org/en-US/docs/Web/Progressive_web_apps/Manifest). It will add the following tags to your `<head>`:
+
+```
+<link rel="manifest" href="/site.webmanifest" />
+```
+
+Note that this partial will only insert the manifest link on your site's homepage, not on other pages. You only need to link to the manifest once per site. Checkers like [`webhint`](https://webhint.io/) will complain if you include manifest links on other pages, so this partial takes care of making sure that the link shows up in the right place and nowhere else.
+
+### `easy-browserconfiglink`
+
+To add a link to your `browserconfig.xml`, set the parameter `enableBrowserConfigLink` to `true` in your site parameters and include either `easy-head` or `easy-browserconfiglink` in the `head` of your document.
+
+```
+{{ partial "easy-browserconfiglink" . }}
+```
+
+This will add the following tags to your `<head>`:
+
+```
+<meta name="msapplication-config" content="/browserconfig.xml" />
+```
+
+### `easy-iconlinks`
+
+To link to the standard default icons, include either `easy-head` or `easy-iconlinks` in any layout that generates the `<head>` of your document, e.g.
+
+```
+{{ partial "easy-iconlinks" . }}
+```
+
+This will add the following tags to your `<head>`:
+
+```
+<link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
+<link rel="icon" href="/favicon.ico" sizes="any" />
+<link rel="icon" href="/icons/icon.svg" type="image/svg+xml" />
+```
+
+### `easy-verification`
+
+Tools such as [Google Search Console](https://search.google.com/search-console/) or [Microsoft Bing Webmaster Tools](https://www.bing.com/webmasters/) require that website owners prove their ownership of a website before the site can be managed by the tool. One method for doing this is to insert a special verification or validation token (unique to each site or owner) in the `<head>` of the site's homepage.
+
+This module provides a simple way to add the verification codes to a site built using Hugo. It provides a single partial that can be invoked from whatever layouts generate `<head>` code for your site.
+
+To use this, specify the validation codes that you want to use by adding them to your `config.toml` file or configuration directory as part of the site parameters.
+
+```
+[params]
+googleVerification = "..."
+msVerification = "..."
+```
+
+(Replace the '...' by the codes that you get from Google or Microsoft).
+
+If you need different validation codes for production and development sites, look at the [Hugo documentation on configuration directories](https://gohugo.io/getting-started/configuration/#configuration-directory).
+
+To add the relevant links to the `<head>` of your HTML documents, use the `easy-head` or `easy-verification` partials in whatever layouts generate the `<head>` of your document, e.g.
+
+```
+{{ partial "easy-verification" . }}
+```
+
+### `easy-googleanalytics`
+
+The `easy-googleanalytics` partial will inject Google Analytics tracking code into the head of your document. To use this, ensure that there is an entry for `google_analytics` in your site parameters, e.g.
+
+```
+[Params]
+google_analytics = 'G-AA1234567'
+```
+
+Then include:
+
+```
+{{ partial "easy-googleanalytics" . }}
+```
+
+or `easy-head` in your template. Google suggests placing this immediately after the opening `<head>` tag. If you use the `easy-head` partial, then the Google Analytics code may not be the very first thing after the `<head>` but it will be close to the top.
+
+If no `google_analytics` value is defined in the site's parameters, no script code will be inserted.
+
+### `easy-robotsmeta`
+
+The `easy-robotsmeta` partial will inject a meta tag to control indexing by robots, e.g.
+
+```
+<meta name="robots" content="index, nofollow">
+```
+
+You can control the behavior of this tag using various parameters. First, the value can be set in your frontmatter with the `robots` parameter, e.g.
+
+```
+[Params]
+robots = noindex, nofollow
+```
+
+If you don't provide a `robots` param, the default behavior will be to insert a meta tag with the value set to `all`, so that your page will be indexed and all links in the page followed. See Google's page on the [robots meta tag](https://developers.google.com/search/docs/crawling-indexing/robots-meta-tag) for a list of possible values.
+
+If you don't want robots meta tags to be added to pages on your site, then you can turn them off site-wide by adding a site parameter `enableRobotsMeta` set to `false`, e.g.
+
+```
+[Params]
+enableRobotsMeta = false
+```
+
+Note that the global `enableRobotsMeta` will be overridden by a local `robots` value, e.g. if `enableRobotsMeta` is `false` but an individual page has a parameter that specifies a value, then the meta tag will be generated for that page.
+
+### `easy-humanslink`
+
+If your site has a [humans.txt](https://humanstxt.org/) file to describe the creators, then set `enableHumansLink` to `true` in your site configuration and  
+
+### Required icons
+
+Between the various external files and the `<head>` of your HTML documents, you will end up with links to most or all of the following icons:
+
+| Location                    | Type | Size    | Linked from         |
+|-----------------------------|------|---------|---------------------|
+| /favicon.ico                | ICO  | 32x32   | `<head>`            |
+| /icons/icon.svg             | SVG  | -       | `<head>`            |
+| /icons/apple-touch-icon.png | PNG  | 180x180 | `<head>`            |
+| /icons/icon-192.png         | PNG  | 192x192 | `site.webmanifest`  |
+| /icons/icon-512.png         | PNG  | 512x512 | `site.webmanifest`  |
+| /icons/icon-mask.png        | PNG  | 512x512 | `site.webmanifest`  |
+| /icons/smalltile.png        | PNG  | 70x70   | `browserconfig.xml` |
+| /icons/mediumtile.png       | PNG  | 150x150 | `browserconfig.xml` |
+| /icons/largetile.png        | PNG  | 310x310 | `browserconfig.xml` |
+| /icons/widetile.png         | PNG  | 310x150 | `browserconfig.xml` |
+
+To avoid cluttering your weblogs with 404s, you should ensure that appropriate icons exist at each of these locations. This module does not include icons or generate them for you.
+
 ### `site.manifest` and `browserconfig.xml` files
 
 The `site.manifest` file is a simple description of some key elements of your file. The file itself is mainly intended to support progressive web apps (PWAs) but even if you aren't building a PWA, you'll probably want to provide a `site.manifest` file. This generates a very simple manifest suitable for a non-PWA site.
@@ -109,151 +265,6 @@ description = "For all your bakery needs"
 theme_color = "#FF0000"
 background_color = "#FFEEEE"
 ```
-
-### `easy-manifestlink`
-
-To add a link to your manifest, use the `easy-manifestlink` partial in any layout that generates the `<head>` of your document, e.g.
-
-```
-{{ partial "easy-manifestlink" . }}
-```
-
-This will add the following tags to your `<head>`:
-
-```
-<link rel="manifest" href="/site.webmanifest" />
-```
-
-Note that this partial will only insert the manifest link on your site's homepage. You only need to link to the manifest once per site. Checkers like [`webhint`](https://webhint.io/) will complain if you include manifest links on other pages, so this partial takes care of making sure that the link shows up in the right place and nowhere else.
-
-### `easy-browserconfiglink`
-
-To add a link to your `browserconfig.xml`, use the `easy-browserconfiglink` partial in any layout that generates the `<head>` of your document, e.g.
-
-```
-{{ partial "easy-browserconfiglink" . }}
-```
-
-This will add the following tags to your `<head>`:
-
-```
-<meta name="msapplication-config" content="/browserconfig.xml" />
-```
-
-### `easy-iconlinks`
-
-To link to the standard default icons, use the `easy-iconlinks` partial in any layout that generates the `<head>` of your document, e.g.
-
-```
-{{ partial "easy-iconlinks" . }}
-```
-
-This will add the following tags to your `<head>`:
-
-```
-<link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
-<link rel="icon" href="/favicon.ico" sizes="any" />
-<link rel="icon" href="/icons/icon.svg" type="image/svg+xml" />
-```
-
-### Required icons
-
-Between the various files and the `<head>` of your HTML documents, you will end up with links to the following icons:
-
-| Location                    | Type | Size    | Linked from         |
-|-----------------------------|------|---------|---------------------|
-| /favicon.ico                | ICO  | 32x32   | `<head>`            |
-| /icons/icon.svg             | SVG  | -       | `<head>`            |
-| /icons/apple-touch-icon.png | PNG  | 180x180 | `<head>`            |
-| /icons/icon-192.png         | PNG  | 192x192 | `site.webmanifest`  |
-| /icons/icon-512.png         | PNG  | 512x512 | `site.webmanifest`  |
-| /icons/smalltile.png        | PNG  | 70x70   | `browserconfig.xml` |
-| /icons/mediumtile.png       | PNG  | 150x150 | `browserconfig.xml` |
-| /icons/largetile.png        | PNG  | 310x310 | `browserconfig.xml` |
-| /icons/widetile.png         | PNG  | 310x150 | `browserconfig.xml` |
-
-To avoid cluttering your weblogs with 404s, you should ensure that appropriate icons exist at each of these locations.
-
-### `easy-verification`
-
-Tools such as [Google Search Console](https://search.google.com/search-console/) or [Microsoft Bing Webmaster Tools](https://www.bing.com/webmasters/) require that website owners prove their ownership of a website before the site can be managed by the tool. One method for doing this is to insert a special verification or validation token (unique to each site or owner) in the `<head>` of the site's homepage.
-
-This module provides a simple way to add the verification codes to a site built using Hugo. It provides a single partial that can be invoked from whatever layouts generate `<head>` code for your site.
-
-To use this, specify the validation codes that you want to use by adding them to your `config.toml` file or configuration directory as part of the site parameters.
-
-```
-[params]
-google_verification = "..."
-ms_verification = "..."
-```
-
-(Replace the '...' by the codes that you get from Google or Microsoft).
-
-If you need different validation codes for production and development sites, look at the [Hugo documentation on configuration directories](https://gohugo.io/getting-started/configuration/#configuration-directory).
-
-To add the relevant links to the `<head>` of your HTML documents, use the `easy-verification` partial in whatever layouts generate the `<head>` of your document, e.g.
-
-```
-{{ partial "easy-verification" . }}
-```
-
-### `easy-googleanalytics`
-
-The `easy-googleanalytics` partial will inject Google Analytics tracking code into the head of your document. To use this, ensure that there is an entry for `google_analytics` in your site parameters, e.g.
-
-```
-[Params]
-google_analytics = 'G-AA1234567'
-```
-
-Then include:
-
-```
-{{ partial "easy-googleanalytics" . }}
-```
-
-in your template, immediately after the opening `<head>` tag.
-
-If no `google_analytics` value is defined in the site's parameters, no script code will be inserted.
-
-### `easy-robotsmeta`
-
-The `easy-robotsmeta` partial will inject a meta tag to control indexing by robots, e.g.
-
-```
-<meta name="robots" content="index, nofollow">
-```
-
-You can control the behavior of this tag using various parameters. First, the value can be set in your frontmatter with the `robots` parameter, e.g.
-
-```
-[Params]
-robots = noindex, nofollow
-```
-
-If you don't provide a `robots` param, the default behavior will be to insert a meta tag with the value set to `all`, so that your page will be indexed and all links in the page followed. See Google's page on the [robots meta tag](https://developers.google.com/search/docs/crawling-indexing/robots-meta-tag) for a list of possible values.
-
-If you don't want robots meta tags to be added to pages on your site, then you can turn them off site-wide by adding a site parameter `enableRobotsMeta` set to `false`, e.g.
-
-```
-[Params]
-enableRobotsMeta = false
-```
-
-Note that the global `enableRobotsMeta` will be overridden by a local `robots` value, e.g. if `enableRobotsMeta` is `false` but an individual page has a parameter that specifies a value, then the meta tag will be generated for that page.
-
-### `easy-headlinks`
-
-To simplify things still further, you can add most of the tags by invoking a single partial:
-
-```
-{{ partial "easy-headlinks" . }}
-```
-
-This will bring in all the partials defined in this module. You will still need to set up the `Site.Params` and `outputs` appropriately.
-
-In addition to the other partials, this will insert a call to `hugo.Generator` to add a generator tag on the homepage. If you would prefer not to have this for any reason, use Hugo's [`disableGeneratorInject`](https://gohugo.io/configuration/all/#disablehugogeneratorinject) site parameter to disable it.
 
 ## Maintainers
 
