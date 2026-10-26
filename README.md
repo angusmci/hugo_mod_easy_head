@@ -12,6 +12,7 @@ Features provided by this module include:
     - a partial for linking to a `browserconfig.xml` file
     - a partial for linking to a small set of standard icons
     - a partial for including verification tokens for Bing and Google
+    - a partial for including the robots meta tag
 
 Note that this module does *not* generate or place icons for you. It just creates links.
 
@@ -216,6 +217,32 @@ in your template, immediately after the opening `<head>` tag.
 
 If no `google_analytics` value is defined in the site's parameters, no script code will be inserted.
 
+### `easy-robotsmeta`
+
+The `easy-robotsmeta` partial will inject a meta tag to control indexing by robots, e.g.
+
+```
+<meta name="robots" content="index, nofollow">
+```
+
+You can control the behavior of this tag using various parameters. First, the value can be set in your frontmatter with the `robots` parameter, e.g.
+
+```
+[Params]
+robots = noindex, nofollow
+```
+
+If you don't provide a `robots` param, the default behavior will be to insert a meta tag with the value set to `all`, so that your page will be indexed and all links in the page followed. See Google's page on the [robots meta tag](https://developers.google.com/search/docs/crawling-indexing/robots-meta-tag) for a list of possible values.
+
+If you don't want robots meta tags to be added to pages on your site, then you can turn them off site-wide by adding a site parameter `enableRobotsMeta` set to `false`, e.g.
+
+```
+[Params]
+enableRobotsMeta = false
+```
+
+Note that the global `enableRobotsMeta` will be overridden by a local `robots` value, e.g. if `enableRobotsMeta` is `false` but an individual page has a parameter that specifies a value, then the meta tag will be generated for that page.
+
 ### `easy-headlinks`
 
 To simplify things still further, you can add most of the tags by invoking a single partial:
@@ -224,7 +251,9 @@ To simplify things still further, you can add most of the tags by invoking a sin
 {{ partial "easy-headlinks" . }}
 ```
 
-This will bring in all the partials defined in this module. You will still need to set up the `Site.Params` and `outputs` appropriately, however.
+This will bring in all the partials defined in this module. You will still need to set up the `Site.Params` and `outputs` appropriately.
+
+In addition to the other partials, this will insert a call to `hugo.Generator` to add a generator tag on the homepage. If you would prefer not to have this for any reason, use Hugo's [`disableGeneratorInject`](https://gohugo.io/configuration/all/#disablehugogeneratorinject) site parameter to disable it.
 
 ## Maintainers
 

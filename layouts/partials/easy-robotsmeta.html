@@ -1,0 +1,1 @@
+{{ if (or (not (isset .Site.Params "enablerobotsmeta")) .Site.Params.enableRobotsMeta (isset .Params "robots")) }}<meta name="robots" content="{{ .Param "robots" | default "all" }}">{{ end }}
