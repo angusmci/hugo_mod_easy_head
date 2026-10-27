@@ -232,6 +232,26 @@ This partial adds a `viewport` `<meta>` element to the head. The default element
 
 but if you need to customize it, add a `viewport` parameter to the page or site configuration.
 
+### `easy-keywords`
+
+This partial adds a `keywords` `<meta>` element, such as:
+
+```
+<meta name="keywords" content='keyword1, keyword2' lang='en-us'>
+```
+
+to the `<head>` of the document. Keywords are defined in the frontmatter of the page and accessed via the `.Keyword` method.  The language is set based on the `.Language.Locale` method.
+
+### `easy-description`
+
+This partial adds a `description` `<meta>` element, such as:
+
+```
+<meta name="description" content='This is a description of this page.' lang='en-us'>
+```
+
+to the `<head>` of the document. The description is defined in the frontmatter of the page and accessed via the `.Description` method. The language is set based on the `.Language.Locale` method.
+
 ## Other
 
 ### Required icons
