@@ -207,7 +207,32 @@ If you don't provide a `robots` param, the meta element will not be generated.
 
 ### `easy-humanslink`
 
-If your site has a [humans.txt](https://humanstxt.org/) file to describe the creators, then set `enableHumansLink` to `true` in your site configuration and  
+If your site has a [humans.txt](https://humanstxt.org/) file to describe the creators, then set `enableHumansLink` to `true` in your site configuration.
+
+```
+[Params]
+enableHumansLink = true
+```
+
+in the site configuration will add:
+
+```
+<link rel="author" href="/humans.txt" type="text/plain">
+```
+
+to the `<head>` of your document.
+
+### `easy-viewport`
+
+This partial adds a `viewport` `<meta>` element to the head. The default element generated will look like:
+
+```
+<meta name="viewport" content='width=device-width,initial-scale=1'>
+```
+
+but if you need to customize it, add a `viewport` parameter to the page or site configuration.
+
+## Other
 
 ### Required icons
 
