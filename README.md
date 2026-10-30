@@ -74,6 +74,8 @@ The simplest way to use this module is to add a single partial to the `<head>` o
 
 This will bring in the other partials defined in this module, adding a large set of standard tags to your `<head>`. The default settings will probably give you sensible results for a basic website, but you may still need to do some basic configuration through `Site.Params` and `outputs` to get the exact behavior you want. You're also responsible for ensuring that you have any required supporting files, e.g. icons or a "humans.txt" file.
 
+The `easy-head` partial uses Hugo's embedded Google Analytics template to add Google Analytics scripts to the `<head>`. If you would like to use this, see Hugo's documentation on [setting up Google Analytics](https://gohugo.io/templates/embedded/#google-analytics).
+
 The `easy-head` partial will also insert a call to `hugo.Generator` to add a generator tag on the homepage. If you would prefer not to have this for any reason, use Hugo's [`disableGeneratorInject`](https://gohugo.io/configuration/all/#disablehugogeneratorinject) site parameter to disable it.
 
 Read the descriptions of the individual partials below to see how to configure them.
@@ -149,25 +151,6 @@ To add the relevant links to the `<head>` of your HTML documents, use the `easy-
 ```
 {{ partial "easy-verification" . }}
 ```
-
-### `easy-googleanalytics`
-
-The `easy-googleanalytics` partial will inject Google Analytics tracking code into the head of your document. To use this, ensure that there is an entry for `google_analytics` in your site parameters, e.g.
-
-```
-[Params]
-google_analytics = 'G-AA1234567'
-```
-
-Then include:
-
-```
-{{ partial "easy-googleanalytics" . }}
-```
-
-or `easy-head` in your template. Google suggests placing this immediately after the opening `<head>` tag. If you use the `easy-head` partial, then the Google Analytics code may not be the very first thing after the `<head>` but it will be close to the top.
-
-If no `google_analytics` value is defined in the site's parameters, no script code will be inserted.
 
 ### `easy-authormeta`
 
