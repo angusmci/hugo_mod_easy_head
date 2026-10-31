@@ -1,1 +1,1 @@
-{{ if ( .Param "robots" )  }}<meta name="robots" content='{{ .Param "robots" }}'>{{ end }}
+{{ if ( .Param "robots" )  }}<meta name="robots" content="{{ .Param `robots` }}">{{ end }}

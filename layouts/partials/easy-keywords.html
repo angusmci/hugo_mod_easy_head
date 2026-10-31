@@ -1,1 +1,1 @@
-<meta name="keywords" content='{{ delimit .Keywords "," }}' lang='{{ .Language.Locale | default "en" }}'>
+<meta name="keywords" content="{{ delimit .Keywords `,` }}" lang="{{ .Language.Locale | default `en` }}">

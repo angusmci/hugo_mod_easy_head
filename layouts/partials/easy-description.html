@@ -1,1 +1,1 @@
-<meta name="description" content='{{ .Description }}' lang='{{ .Language | default "en" }}'>
+<meta name="description" content="{{ .Description }}" lang="{{ .Language.Locale | default `en` }}">
